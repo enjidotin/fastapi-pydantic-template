@@ -1,9 +1,9 @@
 from collections.abc import AsyncGenerator, Generator
+from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.adapters.repositories.sqlalchemy_models import Base
 from app.core.domain.item import Item
@@ -14,14 +14,14 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 
 @pytest.fixture
-def test_client() -> Generator:
+def test_client() -> Generator[TestClient, None, None]:
     """Create a test client for the FastAPI application."""
     with TestClient(app) as client:
         yield client
 
 
 @pytest.fixture
-async def test_db_engine():
+async def test_db_engine() -> AsyncGenerator[Any, None]:
     """Create a test database engine."""
     engine = create_async_engine(
         TEST_DATABASE_URL,
@@ -43,11 +43,10 @@ async def test_db_engine():
 
 
 @pytest.fixture
-async def test_db_session(test_db_engine) -> AsyncGenerator:
+async def test_db_session(test_db_engine: Any) -> AsyncGenerator[AsyncSession, None]:
     """Create a test database session."""
-    async_session = sessionmaker(
-        test_db_engine, class_=AsyncSession, expire_on_commit=False
-    )
+    # Use async_sessionmaker for better typing support
+    async_session = async_sessionmaker(bind=test_db_engine, expire_on_commit=False)
 
     async with async_session() as session:
         yield session

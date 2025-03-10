@@ -27,7 +27,7 @@ router = APIRouter(
 async def get_items(
     service: Annotated[ItemService, Depends(get_item_service)],
     active: bool | None = Query(None, description="Filter by active status"),
-):
+) -> ItemListResponse:
     """Get all items, with optional filtering."""
     if active is not None:
         if active:
@@ -39,7 +39,9 @@ async def get_items(
     else:
         items = await service.get_all_items()
 
-    return ItemListResponse(items=items, count=len(items))
+    # Convert domain items to response format
+    response_items = [ItemResponse.model_validate(item) for item in items]
+    return ItemListResponse(items=response_items, count=len(items))
 
 
 @router.get(
@@ -52,7 +54,7 @@ async def get_items(
 async def get_item(
     service: Annotated[ItemService, Depends(get_item_service)],
     item_id: int = Path(..., description="The ID of the item to get"),
-):
+) -> ItemResponse:
     """Get a specific item by ID."""
     item = await service.get_item(item_id)
     if item is None:
@@ -60,7 +62,7 @@ async def get_item(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with ID {item_id} not found",
         )
-    return item
+    return ItemResponse.model_validate(item)
 
 
 @router.post(
@@ -73,7 +75,7 @@ async def get_item(
 async def create_item(
     item_data: ItemCreate,
     service: Annotated[ItemService, Depends(get_item_service)],
-):
+) -> ItemResponse:
     """Create a new item."""
     # Convert API schema to domain model
     item = Item(
@@ -84,7 +86,7 @@ async def create_item(
     )
 
     created_item = await service.create_item(item)
-    return created_item
+    return ItemResponse.model_validate(created_item)
 
 
 @router.patch(
@@ -98,7 +100,7 @@ async def update_item(
     item_data: ItemUpdate,
     service: Annotated[ItemService, Depends(get_item_service)],
     item_id: int = Path(..., description="The ID of the item to update"),
-):
+) -> ItemResponse:
     """Update an existing item."""
     # First, get the existing item
     existing_item = await service.get_item(item_id)
@@ -114,7 +116,7 @@ async def update_item(
         setattr(existing_item, key, value)
 
     updated_item = await service.update_item(item_id, existing_item)
-    return updated_item
+    return ItemResponse.model_validate(updated_item)
 
 
 @router.delete(
@@ -127,7 +129,7 @@ async def update_item(
 async def delete_item(
     service: Annotated[ItemService, Depends(get_item_service)],
     item_id: int = Path(..., description="The ID of the item to delete"),
-):
+) -> None:
     """Delete an item."""
     deleted = await service.delete_item(item_id)
     if not deleted:
@@ -147,10 +149,11 @@ async def delete_item(
 async def search_items(
     service: Annotated[ItemService, Depends(get_item_service)],
     name: str = Query(..., description="Name to search for"),
-):
+) -> ItemListResponse:
     """Search for items by name."""
     items = await service.search_items_by_name(name)
-    return ItemListResponse(items=items, count=len(items))
+    response_items = [ItemResponse.model_validate(item) for item in items]
+    return ItemListResponse(items=response_items, count=len(items))
 
 
 @router.post(
@@ -166,7 +169,7 @@ async def apply_discount(
     discount_percent: float = Query(
         ..., gt=0, le=100, description="Discount percentage (0-100)"
     ),
-):
+) -> ItemResponse:
     """Apply a discount to an item."""
     updated_item = await service.apply_discount_to_item(item_id, discount_percent)
     if updated_item is None:
@@ -174,4 +177,4 @@ async def apply_discount(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with ID {item_id} not found",
         )
-    return updated_item
+    return ItemResponse.model_validate(updated_item)

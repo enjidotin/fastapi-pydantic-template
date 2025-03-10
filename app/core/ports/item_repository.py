@@ -1,3 +1,5 @@
+import abc
+
 from app.core.domain.item import Item
 from app.core.ports.repositories import Repository
 
@@ -8,6 +10,7 @@ class ItemRepository(Repository[Item]):
     This is a specific port for the Item entity in the hexagonal architecture.
     """
 
+    @abc.abstractmethod
     async def find_by_name(self, name: str) -> list[Item]:
         """Find items by name (partial match).
 
@@ -19,6 +22,7 @@ class ItemRepository(Repository[Item]):
         """
         pass
 
+    @abc.abstractmethod
     async def find_active_items(self) -> list[Item]:
         """Find all active items.
 

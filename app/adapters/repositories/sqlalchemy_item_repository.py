@@ -11,7 +11,7 @@ from app.core.ports.item_repository import ItemRepository
 class SQLAlchemyItemRepository(ItemRepository):
     """SQLAlchemy implementation of the ItemRepository port."""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         """Initialize the repository with a database session.
 
         Args:
@@ -36,7 +36,7 @@ class SQLAlchemyItemRepository(ItemRepository):
 
         return Item.model_validate(db_item)
 
-    async def get_all(self, **kwargs) -> list[Item]:
+    async def get_all(self, **kwargs: dict[str, Any]) -> list[Item]:
         """Get all items, with optional filtering.
 
         Args:
@@ -153,7 +153,7 @@ class SQLAlchemyItemRepository(ItemRepository):
             list[Item]: List of active items
         """
         result = await self.session.execute(
-            select(ItemModel).where(ItemModel.is_active is True)
+            select(ItemModel).where(ItemModel.is_active == True)
         )
 
         db_items = result.scalars().all()

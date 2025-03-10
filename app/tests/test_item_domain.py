@@ -3,7 +3,7 @@ import pytest
 from app.core.domain.item import Item
 
 
-def test_item_creation():
+def test_item_creation() -> None:
     """Test that an item can be created with the correct attributes."""
     item = Item(name="Test Item", description="A test item", price=10.0)
 
@@ -13,7 +13,7 @@ def test_item_creation():
     assert item.is_active is True
 
 
-def test_item_apply_discount():
+def test_item_apply_discount() -> None:
     """Test that the apply_discount method works correctly."""
     item = Item(name="Test Item", price=100.0)
 
@@ -25,7 +25,7 @@ def test_item_apply_discount():
     assert item.price == 100.0
 
 
-def test_item_apply_discount_invalid():
+def test_item_apply_discount_invalid() -> None:
     """Test that apply_discount raises an error for invalid discount values."""
     item = Item(name="Test Item", price=100.0)
 

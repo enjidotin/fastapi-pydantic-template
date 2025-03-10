@@ -1,8 +1,9 @@
 import json
+from typing import cast
 
 from dotenv import load_dotenv
 from pydantic import validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings  # type: ignore
 
 # Load environment variables from .env file
 load_dotenv()
@@ -46,10 +47,11 @@ class Settings(BaseSettings):
         elif isinstance(v, str):
             # Handle JSON string
             try:
-                return json.loads(v)
+                hosts = json.loads(v)
+                return cast(list[str], hosts)
             except json.JSONDecodeError:
                 return [v]
-        return v
+        return cast(list[str], v)
 
     class Config:
         env_file = ".env"

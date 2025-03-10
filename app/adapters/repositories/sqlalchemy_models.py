@@ -1,10 +1,12 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String, func
 from sqlalchemy.ext.declarative import declarative_base
 
+# Create the declarative base - this is a class factory
 Base = declarative_base()
 
 
-class ItemModel(Base):
+# Using a more specific type ignore comment to address the Base class issue
+class ItemModel(Base):  # type: ignore[misc, valid-type]
     """SQLAlchemy model for items table."""
 
     __tablename__ = "items"

@@ -37,12 +37,14 @@ def create_application() -> FastAPI:
 
     # Add startup event to initialize database
     @app.on_event("startup")
-    async def startup_event():
+    async def startup_event() -> None:
         await init_db()
 
     # Add global exception handler
     @app.exception_handler(Exception)
-    async def global_exception_handler(request: Request, exc: Exception):
+    async def global_exception_handler(
+        request: Request, exc: Exception
+    ) -> JSONResponse:
         return JSONResponse(
             status_code=500,
             content={"detail": f"Internal Server Error: {str(exc)}"},

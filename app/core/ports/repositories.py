@@ -24,7 +24,7 @@ class Repository(Generic[T], ABC):
         pass
 
     @abstractmethod
-    async def get_all(self, **kwargs) -> list[T]:
+    async def get_all(self, **kwargs: dict[str, Any]) -> list[T]:
         """Get all entities, with optional filtering.
 
         Args:
