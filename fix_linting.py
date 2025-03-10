@@ -3,6 +3,7 @@
 Script to fix common linting issues in the codebase.
 Run with: python fix_linting.py
 """
+
 import re
 from pathlib import Path
 
