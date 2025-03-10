@@ -40,19 +40,12 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --system -r requirements.txt
-          uv pip install --system flake8 black isort mypy pytest-cov bandit ruff
+          uv pip install --system mypy pytest-cov bandit ruff
 
-      - name: Lint with Ruff
+      - name: Lint and format with Ruff
         run: |
           ruff check .
-
-      - name: Check formatting with Black
-        run: |
-          black --check .
-
-      - name: Check imports with isort
-        run: |
-          isort --check-only --profile black .
+          ruff format --check .
 
       - name: Type checking with mypy
         run: |

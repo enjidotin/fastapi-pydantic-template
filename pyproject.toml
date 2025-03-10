@@ -55,11 +55,20 @@ skips = ["B101"]
 line-length = 88
 target-version = "py311"
 select = [
-    "E",  # pycodestyle errors
-    "F",  # pyflakes
-    "I",  # isort
-    "C4", # flake8-comprehensions
-    "B",  # flake8-bugbear
-    "UP", # pyupgrade
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "C4", # flake8-comprehensions
+  "B",  # flake8-bugbear
+  "UP", # pyupgrade
 ]
 ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+
+[tool.ruff.isort]
+known-third-party = ["fastapi", "pydantic", "sqlalchemy"]
