@@ -1,4 +1,3 @@
-
 from app.core.domain.item import Item
 from app.core.ports.item_repository import ItemRepository
 
@@ -90,7 +89,9 @@ class ItemService:
         """
         return await self.repository.find_active_items()
     
-    async def apply_discount_to_item(self, item_id: int, discount_percent: float) -> Item | None:
+    async def apply_discount_to_item(
+        self, item_id: int, discount_percent: float
+    ) -> Item | None:
         """Apply a discount to an item.
         
         Args:

@@ -26,7 +26,7 @@ router = APIRouter(
 )
 async def get_items(
     active: bool | None = Query(None, description="Filter by active status"),
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Get all items, with optional filtering."""
     if active is not None:
@@ -51,7 +51,7 @@ async def get_items(
 )
 async def get_item(
     item_id: int = Path(..., description="The ID of the item to get"),
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Get a specific item by ID."""
     item = await service.get_item(item_id)
@@ -72,7 +72,7 @@ async def get_item(
 )
 async def create_item(
     item_data: ItemCreate,
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Create a new item."""
     # Convert API schema to domain model
@@ -97,7 +97,7 @@ async def create_item(
 async def update_item(
     item_data: ItemUpdate,
     item_id: int = Path(..., description="The ID of the item to update"),
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Update an existing item."""
     # First, get the existing item
@@ -126,7 +126,7 @@ async def update_item(
 )
 async def delete_item(
     item_id: int = Path(..., description="The ID of the item to delete"),
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Delete an item."""
     deleted = await service.delete_item(item_id)
@@ -146,7 +146,7 @@ async def delete_item(
 )
 async def search_items(
     name: str = Query(..., description="Name to search for"),
-    service: ItemService = Depends(get_item_service)
+    service: ItemService = Depends(get_item_service),
 ):
     """Search for items by name."""
     items = await service.search_items_by_name(name)
@@ -162,8 +162,11 @@ async def search_items(
 )
 async def apply_discount(
     item_id: int = Path(..., description="The ID of the item"),
-    discount_percent: float = Query(..., gt=0, le=100, description="Discount percentage (0-100)"),
-    service: ItemService = Depends(get_item_service)
+    discount_percent: float = Query(..., 
+                                   gt=0, 
+                                   le=100, 
+                                   description="Discount percentage (0-100)"),
+    service: ItemService = Depends(get_item_service),
 ):
     """Apply a discount to an item."""
     updated_item = await service.apply_discount_to_item(item_id, discount_percent)

@@ -28,7 +28,10 @@ def fix_file(file_path):
         # Replace Dict with dict
         content = TYPING_DICT.sub(lambda m: m.group().replace('Dict', 'dict'), content)
         # Replace Optional with | None notation
-        content = TYPING_OPTIONAL.sub(lambda m: m.group().replace('Optional', ''), content)
+        content = TYPING_OPTIONAL.sub(
+            lambda m: m.group().replace('Optional', ''), 
+            content
+        )
     
     # Fix type annotations
     content = LIST_ANNOTATION.sub(r'list[\1]', content)

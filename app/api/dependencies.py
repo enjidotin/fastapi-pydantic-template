@@ -10,7 +10,7 @@ from app.core.services.item_service import ItemService
 
 
 async def get_item_repository(
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
 ) -> ItemRepository:
     """Get an item repository instance.
     
@@ -24,7 +24,7 @@ async def get_item_repository(
 
 
 async def get_item_service(
-    repository: ItemRepository = Depends(get_item_repository)
+    repository: ItemRepository = Depends(get_item_repository),
 ) -> ItemService:
     """Get an item service instance.
     

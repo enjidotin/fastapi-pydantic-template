@@ -101,7 +101,10 @@ class SQLAlchemyItemRepository(ItemRepository):
             return None
             
         # Update item
-        update_data = entity.model_dump(exclude={"id", "created_at", "updated_at"}, exclude_none=True)
+        update_data = entity.model_dump(
+            exclude={"id", "created_at", "updated_at"}, 
+            exclude_none=True
+        )
         
         await self.session.execute(
             update(ItemModel)
