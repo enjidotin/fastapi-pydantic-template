@@ -1,7 +1,9 @@
 from pydantic_settings import BaseSettings
-from typing import List, Optional
+from typing import List, Optional, Union, Any
 import os
+import json
 from dotenv import load_dotenv
+from pydantic import validator
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,9 +28,31 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
+    @validator("ALLOWED_HOSTS", pre=True)
+    def assemble_allowed_hosts(cls, v: Union[str, List[str]]) -> List[str]:
+        """Convert ALLOWED_HOSTS from various formats to a list of strings.
+        
+        Args:
+            v: The value to convert, which can be a comma-separated string,
+               a JSON string representing a list, or already a list.
+               
+        Returns:
+            List[str]: List of allowed hosts
+        """
+        if isinstance(v, str) and not v.startswith("["):
+            # Handle comma-separated string
+            return [host.strip() for host in v.split(",")]
+        elif isinstance(v, str):
+            # Handle JSON string
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                return [v]
+        return v
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
 
 # Create a global settings instance
-settings = Settings() 
+settings = Settings()

@@ -249,6 +249,198 @@ Benefits:
 
 2. Access the API documentation at http://localhost:8000/docs
 
+## Troubleshooting
+
+### Docker Credential Errors
+
+If you encounter the following error when using Docker:
+
+```
+error getting credentials - err: exec: "docker-credential-desktop": executable file not found in $PATH, out: ``
+```
+
+This occurs when Docker is trying to use the Docker Desktop credential helper but can't find it in your system's PATH. Try one of these solutions:
+
+1. **Update Docker Desktop** if you're using it, ensuring it's properly installed.
+
+2. **Configure Docker to use a different credential store**:
+   Edit or create the file `~/.docker/config.json` with the following content:
+
+   ```json
+   {
+     "credsStore": "",
+     "credHelpers": {}
+   }
+   ```
+
+   This tells Docker not to use any credential helper.
+
+3. **For macOS users**:
+
+   ```bash
+   # Install the osxkeychain credential helper
+   brew install docker-credential-helper-osxkeychain
+
+   # Update Docker config
+   echo '{"credsStore":"osxkeychain"}' > ~/.docker/config.json
+   ```
+
+4. **For Linux users**:
+
+   ```bash
+   # Use the secretservice credential helper
+   apt-get install pass gnupg2
+
+   # Update Docker config
+   echo '{"credsStore":"secretservice"}' > ~/.docker/config.json
+   ```
+
+5. **Simplest solution** - Remove the credsStore field entirely:
+   ```bash
+   # Create or modify ~/.docker/config.json
+   echo '{}' > ~/.docker/config.json
+   ```
+
+After applying any of these fixes, try your Docker command again.
+
+### Pydantic Settings Errors
+
+If you encounter errors related to parsing settings when starting the application, such as:
+
+```
+error parsing value for field "ALLOWED_HOSTS" from source "EnvSettingsSource"
+```
+
+This is typically due to environment variables format issues. Here are some solutions:
+
+1. **ALLOWED_HOSTS format issue**:
+
+   The error occurs because `ALLOWED_HOSTS` is defined as a `List[str]` in the code, but is provided as a comma-separated string in the environment.
+
+   Fixed by modifying your `.env` file or environment variables:
+
+   ```
+   # Incorrect format
+   ALLOWED_HOSTS=localhost,127.0.0.1
+
+   # Correct format - use JSON array format
+   ALLOWED_HOSTS=["localhost","127.0.0.1"]
+   ```
+
+2. **Alternative solution - Update the config.py**:
+
+   You can modify the `app/core/config.py` file to handle string conversions automatically:
+
+   ```python
+   @validator("ALLOWED_HOSTS", pre=True)
+   def assemble_allowed_hosts(cls, v: Union[str, List]) -> List[str]:
+       if isinstance(v, str) and not v.startswith("["):
+           return [host.strip() for host in v.split(",")]
+       elif isinstance(v, str):
+           return json.loads(v)
+       return v
+   ```
+
+3. **For Docker environment**:
+
+   In `docker-compose.yml`, you can set the variable directly:
+
+   ```yaml
+   environment:
+     - ALLOWED_HOSTS=["localhost","127.0.0.1","api"]
+   ```
+
+4. **Simplest solution for development**:
+
+   Set `ALLOWED_HOSTS` to accept all hosts during development:
+
+   ```
+   ALLOWED_HOSTS=["*"]
+   ```
+
+Remember to restart your application after making these changes.
+
+### PostgreSQL Connection Issues
+
+If you encounter errors related to PostgreSQL connections, such as:
+
+```
+ModuleNotFoundError: No module named 'psycopg2'
+```
+
+or other database connection errors, try these solutions:
+
+1. **Install PostgreSQL adapter**:
+
+   Make sure you have the required PostgreSQL adapter installed:
+
+   ```bash
+   pip install psycopg2-binary
+   # or with uv:
+   uv pip install psycopg2-binary
+   ```
+
+2. **Check Database URL format**:
+
+   Ensure your `DATABASE_URL` in the `.env` file has the correct format:
+
+   ```
+   # For PostgreSQL
+   DATABASE_URL=postgresql://username:password@hostname:port/database_name
+
+   # Example
+   DATABASE_URL=postgresql://postgres:postgres@db:5432/app
+   ```
+
+3. **For Docker environments**:
+
+   - Ensure the database is running before the API service
+   - Check that the database hostname in `DATABASE_URL` matches the service name in `docker-compose.yml`
+   - Wait for the database to be ready before connecting:
+
+   ```yaml
+   # In docker-compose.yml
+   api:
+     depends_on:
+       db:
+         condition: service_healthy
+   db:
+     healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres"]
+       interval: 5s
+       timeout: 5s
+       retries: 5
+   ```
+
+4. **Install system dependencies**:
+
+   If using a custom environment or Docker, ensure you have the required system libraries:
+
+   ```bash
+   # For Debian/Ubuntu
+   apt-get install -y libpq-dev postgresql-client
+
+   # For Alpine
+   apk add --no-cache postgresql-dev
+   ```
+
+5. **Use SQLAlchemy async driver**:
+
+   Update your `DATABASE_URL` to use an async driver:
+
+   ```
+   # Async PostgreSQL driver
+   DATABASE_URL=postgresql+asyncpg://username:password@hostname:port/database_name
+   ```
+
+   And install the driver:
+
+   ```bash
+   pip install asyncpg
+   ```
+
+For any other database issues, check the PostgreSQL logs and ensure your database server is properly configured.
+
 ## Development Guide
 
 ### Adding a New Entity
