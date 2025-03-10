@@ -1,4 +1,5 @@
 from fastapi import Depends
+from typing import Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.repositories.database import get_session
@@ -10,7 +11,7 @@ from app.core.services.item_service import ItemService
 
 
 async def get_item_repository(
-    session: AsyncSession = Depends(get_session),
+    session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ItemRepository:
     """Get an item repository instance.
     
@@ -24,7 +25,7 @@ async def get_item_repository(
 
 
 async def get_item_service(
-    repository: ItemRepository = Depends(get_item_repository),
+    repository: Annotated[ItemRepository, Depends(get_item_repository)],
 ) -> ItemService:
     """Get an item service instance.
     
