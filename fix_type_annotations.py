@@ -203,7 +203,8 @@ def fix_items_routes():
     patterns = [
         (
             r"return ItemListResponse\(items=items\)",
-            r"return ItemListResponse(items=[ItemResponse.from_domain(item) for item in items])",
+            r"return ItemListResponse(items=[ItemResponse.from_domain(item) "
+            r"for item in items])",
         ),
     ]
 

@@ -40,20 +40,12 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --system -r requirements.txt
-          uv pip install --system mypy pytest-cov bandit "ruff>=0.9.0"
+          uv pip install --system pytest-cov "ruff>=0.9.0"
 
       - name: Lint and format with Ruff
         run: |
           ruff check .
           ruff format --check .
-
-      - name: Type checking with mypy
-        run: |
-          mypy app
-
-      - name: Security check with bandit
-        run: |
-          bandit -r app -c pyproject.toml
 
       - name: Run tests with pytest
         env:

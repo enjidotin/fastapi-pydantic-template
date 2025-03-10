@@ -153,7 +153,7 @@ class SQLAlchemyItemRepository(ItemRepository):
             list[Item]: List of active items
         """
         result = await self.session.execute(
-            select(ItemModel).where(ItemModel.is_active == True)
+            select(ItemModel).where(ItemModel.is_active.is_(True))
         )
 
         db_items = result.scalars().all()
