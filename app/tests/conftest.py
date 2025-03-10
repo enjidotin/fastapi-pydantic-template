@@ -28,17 +28,17 @@ async def test_db_engine():
         echo=False,
         future=True,
     )
-    
+
     # Create tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    
+
     yield engine
-    
+
     # Drop tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-    
+
     await engine.dispose()
 
 
@@ -46,11 +46,9 @@ async def test_db_engine():
 async def test_db_session(test_db_engine) -> AsyncGenerator:
     """Create a test database session."""
     async_session = sessionmaker(
-        test_db_engine, 
-        class_=AsyncSession, 
-        expire_on_commit=False
+        test_db_engine, class_=AsyncSession, expire_on_commit=False
     )
-    
+
     async with async_session() as session:
         yield session
 
@@ -63,5 +61,5 @@ def sample_item() -> Item:
         name="Test Item",
         description="A test item for testing",
         price=99.99,
-        is_active=True
-    ) 
+        is_active=True,
+    )

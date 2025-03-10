@@ -9,7 +9,7 @@ from app.core.config import settings
 
 def create_application() -> FastAPI:
     """Create and configure the FastAPI application.
-    
+
     Returns:
         FastAPI: Configured FastAPI application
     """
@@ -22,7 +22,7 @@ def create_application() -> FastAPI:
         redoc_url="/redoc",
         openapi_url="/openapi.json",
     )
-    
+
     # Configure CORS
     app.add_middleware(
         CORSMiddleware,
@@ -31,15 +31,15 @@ def create_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # Include API router
     app.include_router(api_router, prefix="/api")
-    
+
     # Add startup event to initialize database
     @app.on_event("startup")
     async def startup_event():
         await init_db()
-    
+
     # Add global exception handler
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
@@ -47,9 +47,9 @@ def create_application() -> FastAPI:
             status_code=500,
             content={"detail": f"Internal Server Error: {str(exc)}"},
         )
-    
+
     return app
 
 
 # Create the application instance
-app = create_application() 
+app = create_application()

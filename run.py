@@ -10,4 +10,4 @@ if __name__ == "__main__":
         port=8000,
         reload=settings.DEBUG,
         log_level="debug" if settings.DEBUG else "info",
-    ) 
+    )

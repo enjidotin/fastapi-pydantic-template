@@ -15,10 +15,10 @@ async def get_item_repository(
     session: Annotated[AsyncSession, Depends(get_session)],
 ) -> ItemRepository:
     """Get an item repository instance.
-    
+
     Args:
         session: Database session
-        
+
     Returns:
         ItemRepository: Repository instance
     """
@@ -29,11 +29,11 @@ async def get_item_service(
     repository: Annotated[ItemRepository, Depends(get_item_repository)],
 ) -> ItemService:
     """Get an item service instance.
-    
+
     Args:
         repository: Item repository
-        
+
     Returns:
         ItemService: Service instance
     """
-    return ItemService(repository) 
+    return ItemService(repository)
