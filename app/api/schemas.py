@@ -1,12 +1,12 @@
-from typing import Optional, List
-from pydantic import BaseModel, Field
 from datetime import datetime
+
+from pydantic import BaseModel, Field
 
 
 class ItemBase(BaseModel):
     """Base schema for item data."""
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     price: float = Field(gt=0)
     is_active: bool = True
 
@@ -18,10 +18,10 @@ class ItemCreate(ItemBase):
 
 class ItemUpdate(BaseModel):
     """Schema for updating an item."""
-    name: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = Field(default=None, gt=0)
-    is_active: Optional[bool] = None
+    name: str | None = None
+    description: str | None = None
+    price: float | None = Field(default=None, gt=0)
+    is_active: bool | None = None
 
 
 class ItemResponse(ItemBase):
@@ -37,7 +37,7 @@ class ItemResponse(ItemBase):
 
 class ItemListResponse(BaseModel):
     """Schema for a list of items response."""
-    items: List[ItemResponse]
+    items: list[ItemResponse]
     count: int
 
 

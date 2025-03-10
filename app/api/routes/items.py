@@ -1,16 +1,15 @@
-from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, Path, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 
-from app.core.domain.item import Item
-from app.core.services.item_service import ItemService
 from app.api.dependencies import get_item_service
 from app.api.schemas import (
-    ItemCreate, 
-    ItemUpdate, 
-    ItemResponse, 
+    ErrorResponse,
+    ItemCreate,
     ItemListResponse,
-    ErrorResponse
+    ItemResponse,
+    ItemUpdate,
 )
+from app.core.domain.item import Item
+from app.core.services.item_service import ItemService
 
 router = APIRouter(
     prefix="/items",
@@ -26,7 +25,7 @@ router = APIRouter(
     description="Get a list of all items, with optional filtering by active status."
 )
 async def get_items(
-    active: Optional[bool] = Query(None, description="Filter by active status"),
+    active: bool | None = Query(None, description="Filter by active status"),
     service: ItemService = Depends(get_item_service)
 ):
     """Get all items, with optional filtering."""

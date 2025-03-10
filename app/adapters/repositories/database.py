@@ -1,8 +1,10 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
-from app.core.config import settings
-from app.adapters.repositories.sqlalchemy_models import Base
 import re
+
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+
+from app.adapters.repositories.sqlalchemy_models import Base
+from app.core.config import settings
 
 # Handle both standard PostgreSQL URLs and asyncpg URLs
 db_url = settings.DATABASE_URL

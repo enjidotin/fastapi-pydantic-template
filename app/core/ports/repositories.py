@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List, Optional, Any, Dict
+from typing import Any, Generic, TypeVar
 
 T = TypeVar('T')
 
@@ -12,26 +12,26 @@ class Repository(Generic[T], ABC):
     """
     
     @abstractmethod
-    async def get(self, id: Any) -> Optional[T]:
+    async def get(self, id: Any) -> T | None:
         """Get an entity by ID.
         
         Args:
             id: Entity ID
             
         Returns:
-            Optional[T]: Entity if found, None otherwise
+            T | None: Entity if found, None otherwise
         """
         pass
     
     @abstractmethod
-    async def get_all(self, **kwargs) -> List[T]:
+    async def get_all(self, **kwargs) -> list[T]:
         """Get all entities, with optional filtering.
         
         Args:
             **kwargs: Filter parameters
             
         Returns:
-            List[T]: List of entities
+            list[T]: List of entities
         """
         pass
     
@@ -48,7 +48,7 @@ class Repository(Generic[T], ABC):
         pass
     
     @abstractmethod
-    async def update(self, id: Any, entity: T) -> Optional[T]:
+    async def update(self, id: Any, entity: T) -> T | None:
         """Update an existing entity.
         
         Args:
@@ -56,7 +56,7 @@ class Repository(Generic[T], ABC):
             entity: Updated entity data
             
         Returns:
-            Optional[T]: Updated entity if found, None otherwise
+            T | None: Updated entity if found, None otherwise
         """
         pass
     

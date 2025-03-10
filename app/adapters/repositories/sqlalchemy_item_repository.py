@@ -1,11 +1,11 @@
-from typing import List, Optional, Dict, Any
-from sqlalchemy import select, update, delete
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import or_
+from typing import Any
 
+from sqlalchemy import delete, select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.adapters.repositories.sqlalchemy_models import ItemModel
 from app.core.domain.item import Item
 from app.core.ports.item_repository import ItemRepository
-from app.adapters.repositories.sqlalchemy_models import ItemModel
 
 
 class SQLAlchemyItemRepository(ItemRepository):
@@ -19,14 +19,14 @@ class SQLAlchemyItemRepository(ItemRepository):
         """
         self.session = session
     
-    async def get(self, id: Any) -> Optional[Item]:
+    async def get(self, id: Any) -> Item | None:
         """Get an item by ID.
         
         Args:
             id: Item ID
             
         Returns:
-            Optional[Item]: Item if found, None otherwise
+            Item | None: Item if found, None otherwise
         """
         result = await self.session.execute(
             select(ItemModel).where(ItemModel.id == id)
@@ -38,14 +38,14 @@ class SQLAlchemyItemRepository(ItemRepository):
             
         return Item.model_validate(db_item)
     
-    async def get_all(self, **kwargs) -> List[Item]:
+    async def get_all(self, **kwargs) -> list[Item]:
         """Get all items, with optional filtering.
         
         Args:
             **kwargs: Filter parameters
             
         Returns:
-            List[Item]: List of items
+            list[Item]: List of items
         """
         query = select(ItemModel)
         
@@ -81,7 +81,7 @@ class SQLAlchemyItemRepository(ItemRepository):
         
         return Item.model_validate(db_item)
     
-    async def update(self, id: Any, entity: Item) -> Optional[Item]:
+    async def update(self, id: Any, entity: Item) -> Item | None:
         """Update an existing item.
         
         Args:
@@ -89,7 +89,7 @@ class SQLAlchemyItemRepository(ItemRepository):
             entity: Updated item data
             
         Returns:
-            Optional[Item]: Updated item if found, None otherwise
+            Item | None: Updated item if found, None otherwise
         """
         # Check if item exists
         result = await self.session.execute(
@@ -137,14 +137,14 @@ class SQLAlchemyItemRepository(ItemRepository):
         # If no rows were deleted, the item wasn't found
         return result.rowcount > 0
     
-    async def find_by_name(self, name: str) -> List[Item]:
+    async def find_by_name(self, name: str) -> list[Item]:
         """Find items by name (partial match).
         
         Args:
             name: Item name to search for
             
         Returns:
-            List[Item]: List of matching items
+            list[Item]: List of matching items
         """
         result = await self.session.execute(
             select(ItemModel).where(ItemModel.name.ilike(f"%{name}%"))
@@ -154,14 +154,14 @@ class SQLAlchemyItemRepository(ItemRepository):
         
         return [Item.model_validate(db_item) for db_item in db_items]
     
-    async def find_active_items(self) -> List[Item]:
+    async def find_active_items(self) -> list[Item]:
         """Find all active items.
         
         Returns:
-            List[Item]: List of active items
+            list[Item]: List of active items
         """
         result = await self.session.execute(
-            select(ItemModel).where(ItemModel.is_active == True)
+            select(ItemModel).where(ItemModel.is_active is True)
         )
         
         db_items = result.scalars().all()

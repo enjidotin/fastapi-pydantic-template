@@ -2,7 +2,9 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.repositories.database import get_session
-from app.adapters.repositories.sqlalchemy_item_repository import SQLAlchemyItemRepository
+from app.adapters.repositories.sqlalchemy_item_repository import (
+    SQLAlchemyItemRepository,
+)
 from app.core.ports.item_repository import ItemRepository
 from app.core.services.item_service import ItemService
 

@@ -1,4 +1,4 @@
-from typing import List, Optional
+
 from app.core.domain.item import Item
 from app.core.ports.item_repository import ItemRepository
 
@@ -18,22 +18,22 @@ class ItemService:
         """
         self.repository = item_repository
     
-    async def get_item(self, item_id: int) -> Optional[Item]:
+    async def get_item(self, item_id: int) -> Item | None:
         """Get an item by ID.
         
         Args:
             item_id: Item ID
             
         Returns:
-            Optional[Item]: Item if found, None otherwise
+            Item | None: Item if found, None otherwise
         """
         return await self.repository.get(item_id)
     
-    async def get_all_items(self) -> List[Item]:
+    async def get_all_items(self) -> list[Item]:
         """Get all items.
         
         Returns:
-            List[Item]: List of all items
+            list[Item]: List of all items
         """
         return await self.repository.get_all()
     
@@ -48,7 +48,7 @@ class ItemService:
         """
         return await self.repository.create(item)
     
-    async def update_item(self, item_id: int, item: Item) -> Optional[Item]:
+    async def update_item(self, item_id: int, item: Item) -> Item | None:
         """Update an existing item.
         
         Args:
@@ -56,7 +56,7 @@ class ItemService:
             item: Updated item data
             
         Returns:
-            Optional[Item]: Updated item if found, None otherwise
+            Item | None: Updated item if found, None otherwise
         """
         return await self.repository.update(item_id, item)
     
@@ -71,26 +71,26 @@ class ItemService:
         """
         return await self.repository.delete(item_id)
     
-    async def search_items_by_name(self, name: str) -> List[Item]:
+    async def search_items_by_name(self, name: str) -> list[Item]:
         """Search items by name.
         
         Args:
             name: Item name to search for
             
         Returns:
-            List[Item]: List of matching items
+            list[Item]: List of matching items
         """
         return await self.repository.find_by_name(name)
     
-    async def get_active_items(self) -> List[Item]:
+    async def get_active_items(self) -> list[Item]:
         """Get all active items.
         
         Returns:
-            List[Item]: List of active items
+            list[Item]: List of active items
         """
         return await self.repository.find_active_items()
     
-    async def apply_discount_to_item(self, item_id: int, discount_percent: float) -> Optional[Item]:
+    async def apply_discount_to_item(self, item_id: int, discount_percent: float) -> Item | None:
         """Apply a discount to an item.
         
         Args:
@@ -98,7 +98,7 @@ class ItemService:
             discount_percent: Discount percentage (0-100)
             
         Returns:
-            Optional[Item]: Updated item if found, None otherwise
+            Item | None: Updated item if found, None otherwise
         """
         item = await self.repository.get(item_id)
         if not item:

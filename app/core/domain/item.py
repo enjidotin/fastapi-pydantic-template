@@ -1,4 +1,4 @@
-from typing import Optional
+
 from pydantic import Field
 
 from app.core.domain.base import BaseDomainModel
@@ -7,7 +7,7 @@ from app.core.domain.base import BaseDomainModel
 class Item(BaseDomainModel):
     """Item domain model."""
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     price: float = Field(gt=0)
     is_active: bool = True
     

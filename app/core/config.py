@@ -1,9 +1,8 @@
-from pydantic_settings import BaseSettings
-from typing import List, Optional, Union, Any
-import os
 import json
+
 from dotenv import load_dotenv
 from pydantic import validator
+from pydantic_settings import BaseSettings
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,7 +17,7 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     DEBUG: bool = True
     SECRET_KEY: str = "development-secret-key-change-in-production"
-    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1"]
+    ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1"]
     
     # Database settings
     DATABASE_URL: str = "postgresql://user:password@localhost:5432/db_name"
@@ -29,7 +28,7 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     @validator("ALLOWED_HOSTS", pre=True)
-    def assemble_allowed_hosts(cls, v: Union[str, List[str]]) -> List[str]:
+    def assemble_allowed_hosts(cls, v: str | list[str]) -> list[str]:
         """Convert ALLOWED_HOSTS from various formats to a list of strings.
         
         Args:
@@ -37,7 +36,7 @@ class Settings(BaseSettings):
                a JSON string representing a list, or already a list.
                
         Returns:
-            List[str]: List of allowed hosts
+            list[str]: List of allowed hosts
         """
         if isinstance(v, str) and not v.startswith("["):
             # Handle comma-separated string

@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from app.core.config import settings
-from app.api.router import api_router
 from app.adapters.repositories.database import init_db
+from app.api.router import api_router
+from app.core.config import settings
 
 
 def create_application() -> FastAPI:
