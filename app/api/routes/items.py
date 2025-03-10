@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 
 from app.api.dependencies import get_item_service
 from app.api.schemas import (
